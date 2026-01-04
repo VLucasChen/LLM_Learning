@@ -1,0 +1,101 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyOTj6uEa8XmvkItVraj3kDq",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/VLucasChen/LLM_Learning/blob/main/Multiple_Dimension_Logistic_Regression_Model\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "ZZZ3R-OpwAtK"
+      },
+      "outputs": [],
+      "source": [
+        "import numpy as np\n",
+        "xy = np. loadtxt ('diabetes.csv.gz', delimiter='z', dtype=np. float32)\n",
+        "x_data = torch.from_numpy(xy[:, :-1])\n",
+        "y_data = torch.from_numpy(xy[:, [-1]])"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import torch\n",
+        "\n",
+        "class Model(torch.nn.Module):\n",
+        "  def __init__(self):\n",
+        "    super(Model, self).__init__()\n",
+        "    self.linear1 = torch.nn.Linear(8, 6)\n",
+        "    self.linear2 = torch.nn.Linear(6, 4)\n",
+        "    self.linear3 = torch.nn.Linear(4, 1)\n",
+        "    self.sigmoid = torch.nn.Sigmoid()\n",
+        "\n",
+        "  def forward(self, x):\n",
+        "    x = self.sigmoid(self.linear1(x))\n",
+        "    x = self.sigmiod(self.linear2(x))\n",
+        "    x = self.sigmoid(self.linear3(x))\n",
+        "    return x\n",
+        "\n",
+        "model = Model()"
+      ],
+      "metadata": {
+        "id": "Q5ggaPyPy_1W"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "criterion = torch.nn.BCELoss(size_average=True)\n",
+        "optimizer = torch.optim.SGD(model.parameters(), lr=0.1)"
+      ],
+      "metadata": {
+        "id": "PcPSaA35y_yf"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "for epoch in range(100):\n",
+        "  y_pred = model(x_data)\n",
+        "  loss = criterion(y_pred, y_data)\n",
+        "  print(epoch, loss.item())\n",
+        "\n",
+        "  optimizer.zero_grad()\n",
+        "  loss.backward()\n",
+        "  optimizer.step()"
+      ],
+      "metadata": {
+        "id": "rDZB30k20KEu"
+      },
+      "execution_count": null,
+      "outputs": []
+    }
+  ]
+}
